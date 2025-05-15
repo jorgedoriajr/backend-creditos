@@ -1,0 +1,32 @@
+services:
+  postgres:
+    image: postgres:latest
+    container_name: ms-database
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: infuse
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    networks:
+      - my_network
+
+  backend-creditos:
+    image: backend-creditos-app
+    build:
+      context: . # referência ao Dockerfile da aplicação backend-creditos
+    container_name: creditos-app
+    ports:
+      - "8080:8080"
+    environment:
+      POSTGRES_URL: jdbc:postgresql://postgres:5432/infuse
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    networks:
+      - my_network
+    depends_on:
+      - postgres
+
+networks:
+  my_network:
+    driver: bridge
