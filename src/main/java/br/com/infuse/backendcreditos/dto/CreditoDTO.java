@@ -18,6 +18,21 @@ public class CreditoDTO {
 
     public CreditoDTO() { }
 
+    public CreditoDTO(String numeroCredito, String numeroNfse, LocalDate dataConstituicao, BigDecimal valorIssqn,
+                      String tipoCredito, boolean simplesNacional, BigDecimal aliquota, BigDecimal valorFaturado,
+                      BigDecimal valorDeducao, BigDecimal baseCalculo) {
+        this.numeroCredito = numeroCredito;
+        this.numeroNfse = numeroNfse;
+        this.dataConstituicao = dataConstituicao;
+        this.valorIssqn = valorIssqn;
+        this.tipoCredito = tipoCredito;
+        this.simplesNacional = simplesNacional;
+        this.aliquota = aliquota;
+        this.valorFaturado = valorFaturado;
+        this.valorDeducao = valorDeducao;
+        this.baseCalculo = baseCalculo;
+    }
+
     public String getNumeroCredito() {
         return numeroCredito;
     }
