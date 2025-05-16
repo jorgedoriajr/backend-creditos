@@ -8,7 +8,8 @@ import br.com.infuse.backendcreditos.model.Credito;
 import br.com.infuse.backendcreditos.repository.CreditoRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class CreditoService {
@@ -19,20 +20,26 @@ public class CreditoService {
         this.creditoRepository = creditoRepository;
     }
 
-    public Optional<CreditoDTO> findByNumeroCredito(String numeroCredito) {
-        Credito credito = creditoRepository.findByNumeroCredito(numeroCredito);
+    public List<CreditoDTO> findByNumeroCredito(String numeroCredito) {
+        List<Credito> credito = creditoRepository.findByNumeroCredito(numeroCredito);
         if (credito == null) {
             throw new CreditoNotFoundException();
         }
-        return Optional.of(DTOConverter.convert(credito));
+        return credito
+                .stream()
+                .map(DTOConverter::convert)
+                .collect(Collectors.toList());
     }
 
-    public Optional<CreditoDTO> findByNumeroNfse(String numeroNfse) {
-        Credito credito = creditoRepository.findByNumeroNfse(numeroNfse);
+    public List<CreditoDTO> findByNumeroNfse(String numeroNfse) {
+        List<Credito> credito = creditoRepository.findByNumeroNfse(numeroNfse);
         if (credito == null) {
             throw new NfseNotFoundException();
         }
-        return Optional.of(DTOConverter.convert(credito));
+        return credito
+                .stream()
+                .map(DTOConverter::convert)
+                .collect(Collectors.toList());
     }
 
 }

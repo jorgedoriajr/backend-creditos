@@ -4,7 +4,7 @@ import br.com.infuse.backendcreditos.dto.CreditoDTO;
 import br.com.infuse.backendcreditos.service.CreditoService;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Optional;
+import java.util.List;
 
 @RequestMapping("/api")
 @RestController
@@ -17,12 +17,12 @@ public class CreditoController {
     }
 
     @GetMapping("/creditos/credito/{numeroCredito}")
-    Optional<CreditoDTO> findByNumeroCredito(@PathVariable String numeroCredito) {
+    List<CreditoDTO> findByNumeroCredito(@PathVariable String numeroCredito) {
         return creditoService.findByNumeroCredito(numeroCredito);
     }
 
     @GetMapping("/creditos/{numeroNfse}")
-    Optional<CreditoDTO> findByNumeroNfse(@PathVariable String numeroNfse) {
+    List<CreditoDTO> findByNumeroNfse(@PathVariable String numeroNfse) {
         return creditoService.findByNumeroNfse(numeroNfse);
     }
 
