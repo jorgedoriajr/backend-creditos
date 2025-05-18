@@ -117,6 +117,10 @@ docker-compose down -v
 
   ![image](https://github.com/user-attachments/assets/c28973a1-a6b7-4f93-a4a4-ddaf423e4c64)
 
+- 100% integration test:
+
+  ![image](https://github.com/user-attachments/assets/82f3167b-3af2-40bd-a6a7-351a988db369)
+
 ## 🧾 Database Schema Informations
 ```java
 create schema if not exists infuse;
