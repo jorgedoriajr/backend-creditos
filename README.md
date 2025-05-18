@@ -7,10 +7,22 @@ A Credit Inquiry API built with **Java**, featuring the using of the **Spring Bo
 
 ## 📌 Features
 
-- Query screen allowing you to search only by NFS-e number or credit number.
-- Table displaying the results of the query.
-- Responsiveness for mobile devices.
-
+1. GET /api/creditos/{numeroNfse}
+   - Description: Returns a list of credits based on the NFS-e number.
+     - Parameter:
+           - numeroNfse (String) - NFS-e identifier number
+   - Expected response:
+       
+       ![image](https://github.com/user-attachments/assets/7fcc2914-f1e4-498d-a936-a2edac38e605)
+       
+3. GET /api/creditos/credito/{numeroCredito}
+   - Description: Returns the details of a specific constituted credit based on the constituted credit number.
+     - Parameter:
+           - numeroCredito (String) - Identifier number of the constituted credit.
+   - Expected response:
+ 
+       ![image](https://github.com/user-attachments/assets/7fcc2914-f1e4-498d-a936-a2edac38e605)
+       
 ## ⚙️ Tech Stack
 
 | Technology      | Description                                                            |
@@ -31,7 +43,7 @@ A Credit Inquiry API built with **Java**, featuring the using of the **Spring Bo
 ```java
 git clone -b master https://github.com/jorgedoriajr/backend-creditos.git
 ```
-2. Creating the network in Docker
+2. Create the network in Docker, if necessary
 ```java
 docker network create --driver bridge my_network
 ```
@@ -48,16 +60,42 @@ docker-compose build --no-cache
 docker-compose up -d
 ```
 5. Testing API calls from within the Docker Container
-```java
-docker exec -it frontend-creditos-frontend-1 sh
-curl http://creditos-app:8080/api/creditos/1122334
-curl http://creditos-app:8080/api/creditos/credito/123456
-```
+   - Open the Windows command prompt
+     ```java
+     CMD
+     ```
+   - Run the following commands
+     ```java
+     docker exec -it backend-creditos-kafka-1 sh
+     ```
+     ```java
+     curl http://creditos-app:8080/api/creditos/1122334
+     ```
+     ```java
+     curl http://creditos-app:8080/api/creditos/credito/123456
+     ```
 6. View the topic credito-topic on Kafka
-```java
-http://localhost:19000/
-```
-6. Stop project
+   - Open your browser and enter the following url
+     ```java
+     http://localhost:19000
+     ```
+   - Select the Kafdrop options
+     ```java
+     Select the credito-topic
+     ```
+     ![image](https://github.com/user-attachments/assets/3066c85d-5e2c-4e6d-b1e4-9225d4a4196e)
+
+     ```java
+     Select the partition containing the messages
+     ```
+     ![image](https://github.com/user-attachments/assets/4f248c1a-c4b7-470a-9996-c0194d900536)
+
+      ```java
+     Check out the messages
+     ```
+      ![image](https://github.com/user-attachments/assets/e68089b1-6b73-4da1-af6c-8373ad470cc5)
+
+6. Stop the project
 ```java
 docker-compose down -v
 ```
@@ -85,9 +123,10 @@ NSERT INTO credito (numero_credito, numero_nfse,
                     tipo_credito, simples_nacional,
                     aliquota, valor_faturado,
                     valor_deducao, base_calculo)
-VALUES('123456', '7891011', '2024-02-25', 1500.75, 'ISSQN', true, 5.0, 30000.00, 5000.00, 25000.00),
-      ('789012', '7891011', '2024-02-26', 1200.50, 'ISSQN', false, 4.5, 25000.00, 4000.00, 21000.00),
-      ('654321', '1122334', '2024-01-15', 800.50, 'Outros', true, 3.5, 20000.00, 3000.00, 17000.00);
+VALUES
+('123456', '7891011', '2024-02-25', 1500.75, 'ISSQN', true, 5.0, 30000.00, 5000.00, 25000.00),
+('789012', '7891011', '2024-02-26', 1200.50, 'ISSQN', false, 4.5, 25000.00, 4000.00, 21000.00),
+('654321', '1122334', '2024-01-15', 800.50, 'Outros', true, 3.5, 20000.00, 3000.00, 17000.00);
 ```
 
 ## 🙋 Author
