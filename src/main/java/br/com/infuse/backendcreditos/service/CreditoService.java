@@ -22,7 +22,7 @@ public class CreditoService {
 
     public List<CreditoDTO> findByNumeroCredito(String numeroCredito) {
         List<Credito> credito = creditoRepository.findByNumeroCredito(numeroCredito);
-        if (credito == null) {
+        if (credito == null || credito.isEmpty()) {
             throw new CreditoNotFoundException();
         }
         return credito
@@ -33,7 +33,7 @@ public class CreditoService {
 
     public List<CreditoDTO> findByNumeroNfse(String numeroNfse) {
         List<Credito> credito = creditoRepository.findByNumeroNfse(numeroNfse);
-        if (credito == null) {
+        if (credito == null || credito.isEmpty()) {
             throw new NfseNotFoundException();
         }
         return credito

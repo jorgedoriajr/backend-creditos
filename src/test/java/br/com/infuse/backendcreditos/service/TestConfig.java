@@ -1,30 +1,27 @@
 package br.com.infuse.backendcreditos.service;
 
-import br.com.infuse.backendcreditos.dto.CreditoDTO;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
-import org.springframework.kafka.annotation.KafkaListener;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Consumer;
 
 @TestConfiguration
 public class TestConfig {
 
     @Bean
-    public Consumer<CreditoDTO> creditoConsumer() {
-        return new Consumer<CreditoDTO>() {
-            private final List<CreditoDTO> messages = new ArrayList<>();
-
-            @KafkaListener(topics = "credito-topic", groupId = "test-group")
-            public void accept(CreditoDTO creditoDTO) {
-                messages.add(creditoDTO);
-            }
-
-            public List<CreditoDTO> getMessages() {
-                return messages;
-            }
-        };
+    public CreditoConsumerTest creditoConsumerTestDouble() {
+        return new CreditoConsumerTest();
     }
+
+    @Bean
+    public ObjectMapper objectMapper() {
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        return objectMapper;
+    }
+
 }
