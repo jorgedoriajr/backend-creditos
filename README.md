@@ -51,15 +51,15 @@ docker network create --driver bridge my_network
 ```java
 ./mvnw clean package
 ```
-3. Building the Docker image
+4. Building the Docker image
 ```java
 docker-compose build --no-cache
 ```
-4. Running containers in Docker
+5. Running containers in Docker
 ```java
 docker-compose up -d
 ```
-5. Testing API calls from within the Docker Container
+6. Testing API calls from within the Docker Container
    - Open the Windows command prompt
      ```java
      CMD
@@ -74,7 +74,7 @@ docker-compose up -d
      ```java
      curl http://creditos-app:8080/api/creditos/credito/123456
      ```
-6. View the topic credito-topic on Kafka
+7. View the topic credito-topic on Kafka
    - Open your browser and enter the following url
      ```java
      http://localhost:19000
@@ -95,7 +95,7 @@ docker-compose up -d
      ```
       ![image](https://github.com/user-attachments/assets/e68089b1-6b73-4da1-af6c-8373ad470cc5)
 
-6. Stop the project
+8. Stop the project
 ```java
 docker-compose down -v
 ```
