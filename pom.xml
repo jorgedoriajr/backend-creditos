@@ -153,6 +153,29 @@
                     <encoding>UTF-8</encoding>
                 </configuration>
             </plugin>
+            <!-- Plugin do JaCoCo para a geração dos relatórios de cobertura de testes -->
+            <!-- Execute mvn clean install, mvn clean test jacoco:report e mvn clean test jacoco:report site
+                 Consulte os resultados AQUI: file:///C:/Projetos/delivery/user-api/target/site/jacoco/index.html-->
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.8.12</version>
+                <executions>
+                    <execution>
+                        <id>default-prepare-agent</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>default-report</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 
