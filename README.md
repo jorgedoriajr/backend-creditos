@@ -20,7 +20,6 @@ A Credit Inquiry API built with **Java**, featuring the using of the **Spring Bo
 | Spring Data JPA | Data access framework that simplifies database interactions            |
 | Hibernate       | Java-based object-relational mapping (ORM) framework                   |
 | PostgreSQL      | Relational database                                                    |
-| Angular 19.2.11 | Front-end framework for creating web applications                      |
 | Docker          | Open platform for developing, shipping and running applications        |
 | Kafka           | Distributed streaming platform used to create real-time data pipelines |
 | JUnit           | A unit testing framework for Java for writing and executing tests      |
@@ -36,7 +35,11 @@ git clone -b master https://github.com/jorgedoriajr/backend-creditos.git
 ```java
 docker network create --driver bridge my_network
 ```
-3. Building the project
+3. Run the Maven build
+```java
+./mvnw clean package
+```
+3. Building the Docker image
 ```java
 docker-compose build --no-cache
 ```
@@ -53,6 +56,10 @@ curl http://creditos-app:8080/api/creditos/credito/123456
 6. View the topic credito-topic on Kafka
 ```java
 http://localhost:19000/
+```
+6. Stop project
+```java
+docker-compose down -v
 ```
 
 ## 🧾 Database Schema Information
