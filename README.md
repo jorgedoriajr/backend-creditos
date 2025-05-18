@@ -3,7 +3,7 @@ Desafio Técnico de back-end créditos INFUSE
 
 ﻿# 🏦 Credit Inquiry API
 
-A Credit Inquiry API built with **Java**, featuring the using of the **Spring Boot**, and connected to a **PostgreeSQL** database and with event log on **Kafka**.
+A Credit Inquiry API built with **Java**, featuring the using of the **Spring Boot**, and connected to a **PostgreSQL** database and with event log on **Kafka**.
 
 ## 📌 Features
 
