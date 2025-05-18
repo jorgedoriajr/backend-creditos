@@ -100,7 +100,24 @@ docker-compose up -d
 docker-compose down -v
 ```
 
-## 🧾 Database Schema Information
+## 🧾 Coverage Test Informations
+- Project over 80% coverage
+
+  ![image](https://github.com/user-attachments/assets/fc223c21-92c1-4482-bf55-363abc0adc20)
+
+- Service
+
+  ![image](https://github.com/user-attachments/assets/840a058d-21ff-4691-b98c-fc9b88421d79)
+
+- Rest Controller
+
+  ![image](https://github.com/user-attachments/assets/e09cfab6-bdf5-45a0-a58d-a869f79833a7)
+
+- Producer Kafka:
+
+  ![image](https://github.com/user-attachments/assets/c28973a1-a6b7-4f93-a4a4-ddaf423e4c64)
+
+## 🧾 Database Schema Informations
 ```java
 create schema if not exists infuse;
 
