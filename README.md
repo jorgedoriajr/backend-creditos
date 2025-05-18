@@ -121,12 +121,6 @@ docker-compose down -v
 
   ![image](https://github.com/user-attachments/assets/82f3167b-3af2-40bd-a6a7-351a988db369)
 
-## 🧾 Collection Postman
-- File
-
-  [Uploading INFUSE.postman_collection.json…]()
-
-
 ## 🧾 Database Schema Informations
 ```java
 create schema if not exists infuse;
