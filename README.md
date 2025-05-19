@@ -139,7 +139,7 @@ CREATE TABLE infuse.credito (
     base_calculo DECIMAL(15, 2) NOT NULL
 );
 
-NSERT INTO credito (numero_credito, numero_nfse,
+INSERT INTO credito (numero_credito, numero_nfse,
                     data_constituicao, valor_issqn,
                     tipo_credito, simples_nacional,
                     aliquota, valor_faturado,
