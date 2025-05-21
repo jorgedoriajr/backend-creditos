@@ -1,0 +1,41 @@
+name: Build e Teste backend-creditos
+
+# Aqui contém o trigger da nossa pipeline:
+# ==============================================================================================
+# Nesse ponto:
+# 🔄 Sempre que houver um push na branch "main" ou quando um pull request for aberto/atualizado
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - master
+      - feature/* # aqui usa o padrão no nome da branch...
+  workflow_dispatch: # usada para conseguir executar a pipeline manualmente...
+
+# Aqui contém os jobs (steps) da pipeline, ou seja, os passos de Build em ordem numérica:
+# ==============================================================================================
+# 1. ⚙️ Usa o Ubuntu como ambiente de execução
+# 2. 📥 Fazer checkout do código
+# 3. ☕ Configurar o JDK 21 (Temurin distribution)
+# 4. 📦 Configurar cache do Maven para builds mais rápidos
+# 5. 🚀 Executar o build e testes usando o wrapper do Maven
+jobs:
+  build:
+    # 1. definir o Sistema Operacional que será utilizado
+    runs-on: ubuntu-latest
+    steps:
+      # 2. é um git clone do repositório...
+      - uses: actions/checkout@v4
+      # 3. Instalar o Java JDK 21...
+      - name: Configurar JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          # 4. cache...
+          cache: maven
+      # 5. Build e teste do microsserviço...
+      - name: Build e Teste com Maven
+        run: ./mvnw clean verify
