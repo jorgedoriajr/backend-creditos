@@ -26,8 +26,15 @@ jobs:
     # 1. definir o Sistema Operacional que será utilizado
     runs-on: ubuntu-latest
     steps:
+
       # 2. é um git clone do repositório...
       - uses: actions/checkout@v4
+
+      # 1. Adicionei um novo passo "Configurar permissões do Maven wrapper" que
+      # executa "chmod +x mvnw"
+      - name: Configurar permissões do Maven wrapper
+        run: chmod +x mvnw
+
       # 3. Instalar o Java JDK 21...
       - name: Configurar JDK 21
         uses: actions/setup-java@v4
@@ -36,6 +43,7 @@ jobs:
           distribution: 'temurin'
           # 4. cache...
           cache: maven
+
       # 5. Build e teste do microsserviço...
       - name: Build e Teste com Maven
         run: ./mvnw clean verify
