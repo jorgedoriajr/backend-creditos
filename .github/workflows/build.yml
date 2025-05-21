@@ -9,12 +9,27 @@ on:
     branches:
       - main
       - master  # Adicionando master aqui também
+      - feature/* # aqui usa o padrão no nome da branch...
   pull_request:
     branches:
       - main    # Alterando para main para manter consistência
       - master
-      - feature/* # aqui usa o padrão no nome da branch...
   workflow_dispatch: # usada para conseguir executar a pipeline manualmente...
+    inputs:
+      environment:
+        description: 'Ambiente para execução'
+        required: true
+        default: 'development'
+        type: choice
+        options:
+          - development
+          - staging
+          - production
+      debug_enabled:
+        description: 'Executar com debug ativado'
+        required: false
+        type: boolean
+        default: false
 
 # Aqui contém os jobs (steps) da pipeline, ou seja, os passos de Build em ordem numérica:
 # ==============================================================================================
