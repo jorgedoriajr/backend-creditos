@@ -14,22 +14,8 @@ on:
     branches:
       - main    # Alterando para main para manter consistência
       - master
-  workflow_dispatch: # usada para conseguir executar a pipeline manualmente...
-    inputs:
-      environment:
-        description: 'Ambiente para execução'
-        required: true
-        default: 'development'
-        type: choice
-        options:
-          - development
-          - staging
-          - production
-      debug_enabled:
-        description: 'Executar com debug ativado'
-        required: false
-        type: boolean
-        default: false
+  # usada para conseguir executar a pipeline manualmente...
+  workflow_dispatch:
 
 # Aqui contém os jobs (steps) da pipeline, ou seja, os passos de Build em ordem numérica:
 # ==============================================================================================
