@@ -8,8 +8,10 @@ on:
   push:
     branches:
       - main
+      - master  # Adicionando master aqui também
   pull_request:
     branches:
+      - main    # Alterando para main para manter consistência
       - master
       - feature/* # aqui usa o padrão no nome da branch...
   workflow_dispatch: # usada para conseguir executar a pipeline manualmente...
