@@ -121,6 +121,10 @@ docker-compose down -v
 
   ![image](https://github.com/user-attachments/assets/82f3167b-3af2-40bd-a6a7-351a988db369)
 
+- Build Success with GitHub Actions:
+
+  ![image](https://github.com/user-attachments/assets/c254be49-5032-4eab-86a1-0f2c0d330c23)
+
 ## 🧾 Database Schema Informations
 ```java
 create schema if not exists infuse;
