@@ -84,7 +84,7 @@ jobs:
     # Uma outra forma de condicionar é usando o "if". Nesse caso, estou condicionando a execução do Job "test-unit"
     # se o commit for realizado numa branch que começar com `feature/`**.
     # (O "if" é quando queremos fazer um condicionamento específico, como no caso abaixo)
-    if: startsWith(github.ref, 'refs/heads/feature/')
+    #if: startsWith(github.ref, 'refs/heads/feature/')
 
     steps:
       - uses: actions/checkout@v4
