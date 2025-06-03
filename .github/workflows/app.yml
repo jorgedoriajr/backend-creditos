@@ -55,9 +55,6 @@ jobs:
       - name: Build (compilar projeto com Maven)
         run: ./mvnw clean package -DskipTests
 
-      - name: Conferir existência do JAR
-        run: ls -lh target/
-
       # 6. Gerar o arquivo `target/backend-creditos-0.0.1-SNAPSHOT.jar`.
       - name: Build da imagem Docker
         run: docker build -t backend-creditos .
@@ -137,8 +134,8 @@ jobs:
           # cache-dependency-path: 'sub-project/pom.xml'
 
       # Subir os serviços do docker-compose antes dos testes (Sobe seus containers, ex. banco/kafka)
-      - name: Subir containers necessários com Docker Compose
-        run: docker compose -f docker-compose.yml up -d
+      - name: Subir containers de infra necessários com Docker Compose
+        run: docker compose -f docker-compose.yml up -d postgres kafka zookeeper kafdrop
 
       # Espera alguns segundos para os containers ficarem prontos (ajuste se necessário)
       - name: Aguardar serviços subirem (opcional)
