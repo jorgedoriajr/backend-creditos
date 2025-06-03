@@ -99,6 +99,10 @@ jobs:
           # é opcional e só é necessário em repositórios multi-módulos (multi-project), ou quando o arquivo `pom.xml` está fora da raiz do projeto
           # cache-dependency-path: 'sub-project/pom.xml'
 
+      # Criar a rede explicitamente antes do docker-compose up
+      - name: Criar rede Docker para integração
+        run: docker network create my_network || true
+
       # Subir os serviços do docker-compose antes dos testes (Sobe seus containers, ex. banco/kafka)
       - name: Subir containers de infra necessários com Docker Compose
         run: docker compose -f docker-compose.yml up -d postgres kafka zookeeper kafdrop
