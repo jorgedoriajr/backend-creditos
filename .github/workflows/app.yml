@@ -170,7 +170,7 @@ jobs:
     # A variável "needs" em needs.test-unit.result faz referência acima.
     # O diferente de !cancelled() serve para habilitar de forma correta o cancelamento da execução do Flow...
     if: (!cancelled()
-      && github.ref == 'refs/heads/master'
+      && (github.event_name == 'workflow_dispatch' || github.ref == 'refs/heads/master')
       && needs.build.result == success()
       && needs.test-unit.result == success()
       && needs.test-integration.result == success())
