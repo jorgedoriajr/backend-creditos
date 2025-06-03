@@ -15,6 +15,10 @@ on:
   # usada para conseguir executar a pipeline manualmente...
   workflow_dispatch:
 
+# Aqui estou definindo variáveis globais da pipeline, mas mesmo assim, são utilizadas apenas a nível de STEPS...
+env:
+  SHOULD_RUN_TEST-INTEGRATION: true
+
 # Aqui contém os jobs (steps) da pipeline, ou seja, os passos de Build em ordem numérica:
 # ==============================================================================================
 # 1. ⚙️ Usa o Ubuntu como ambiente de execução
@@ -43,8 +47,168 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
           # 4. cache...
-          cache: maven
+          cache: 'maven'
+          # é opcional e só é necessário em repositórios multi-módulos (multi-project), ou quando o arquivo `pom.xml` está fora da raiz do projeto
+          # cache-dependency-path: 'sub-project/pom.xml'
 
-      # 5. Build e teste do microsserviço...
-      - name: Build e Teste com Maven
-        run: ./mvnw clean verify
+      # 5. Build do microsserviço (avançando os testes unitário e de integração)
+      - name: Build (compilar projeto com Maven)
+        run: ./mvnw clean package -DskipTests
+
+      # 6. Gerar o arquivo `target/backend-creditos-0.0.1-SNAPSHOT.jar`.
+      - name: Build da imagem Docker
+        run: docker build -t backend-creditos .
+
+  #sonar:
+  #  runs-on: ubuntu-latest
+  #  steps:
+  #    - uses: actions/checkout@v4
+  #    - name: Configurar JDK 21
+  #      uses: actions/setup-java@v4
+  #      with:
+  #        java-version: '21'
+  #        distribution: 'temurin'
+  #    - name: SonarCloud Scan
+  #      uses: SonarSource/sonarcloud-github-action@v2
+  #      with:
+  #        projectKey: jorgedoriajr_backend-creditos
+  #        organization: jorgedoriajr
+  #      env:
+  #        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+
+  test-unit:
+    # o "needs" garante que só roda após o build concluir...(O "needs" é quando queremos fazer dependência entre Jobs no modo geral)
+    #needs: build
+    runs-on: ubuntu-latest
+    # Uma outra forma de condicionar é usando o "if". Nesse caso, estou condicionando a execução do Job "test-unit"
+    # se o commit for realizado numa branch que começar com `feature/`**.
+    # (O "if" é quando queremos fazer um condicionamento específico, como no caso abaixo)
+    if: startsWith(github.ref, 'refs/heads/feature/')
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Configurar permissões do Maven wrapper
+        run: chmod +x mvnw
+      - name: Configurar JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: 'maven'
+          # é opcional e só é necessário em repositórios multi-módulos (multi-project), ou quando o arquivo `pom.xml` está fora da raiz do projeto
+          # cache-dependency-path: 'sub-project/pom.xml'
+
+      # Subir os serviços do docker-compose antes dos testes (Sobe seus containers, ex. banco/kafka)
+      - name: Subir containers necessários com Docker Compose
+        run: docker compose -f docker-compose.yml up -d
+
+      # Espera alguns segundos para os containers ficarem prontos (ajuste se necessário)
+      - name: Aguardar serviços subirem (opcional)
+        run: sleep 15
+
+      - name: Rodar apenas os testes unitários
+        run: ./mvnw test
+
+      # DERRUBA os containers após os testes
+      - name: Derrubar containers
+        if: always()
+        run: docker compose -f docker-compose.yml down
+
+  test-integration:
+    # o "needs" garante que só roda após o build concluir...
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Configurar permissões do Maven wrapper
+        run: chmod +x mvnw
+      - name: Configurar JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: 'maven'
+          # é opcional e só é necessário em repositórios multi-módulos (multi-project), ou quando o arquivo `pom.xml` está fora da raiz do projeto
+          # cache-dependency-path: 'sub-project/pom.xml'
+
+      # Subir os serviços do docker-compose antes dos testes (Sobe seus containers, ex. banco/kafka)
+      - name: Subir containers necessários com Docker Compose
+        run: docker compose -f docker-compose.yml up -d
+
+      # Espera alguns segundos para os containers ficarem prontos (ajuste se necessário)
+      - name: Aguardar serviços subirem (opcional)
+        run: sleep 15
+
+      - name: Rodar apenas os testes de integração
+        # Aqui está condicionamento específico usando uma variável (obs: as variável só estarão disponíveis a nível de steps e não jobs)
+        # Por exemplo, github.ref é um tipo de variável utilizada a nível de Jobs
+        if: ${{ env.SHOULD_RUN_TEST-INTEGRATION }}
+        run: ./mvnw failsafe:integration-test failsafe:verify
+
+      # DERRUBA os containers após os testes
+      - name: Derrubar containers
+        if: always()
+        run: docker compose -f docker-compose.yml down
+
+  deploy:
+    # Aqui o "needs" pode agrupar N dependências num array de Jobs...
+    # Porém, ambos "needs" e "if" podem co-existir (existir no mesmo lugar...)
+    needs: [build, test-unit, test-integration]
+    # Só faz deploy na master -> se os testes unitário forem executados com sucesso,
+    # se o build for executado com sucesso e se os testes de integração foram executados com sucesso também.
+    # Tem que avaliar todas as dependências dentro do array de jobs...
+    # A variável "needs" em needs.test-unit.result faz referência acima.
+    # O diferente de !cancelled() serve para habilitar de forma correta o cancelamento da execução do Flow...
+    if: (!cancelled()
+      && github.ref == 'refs/heads/master'
+      && needs.build.result == success()
+      && needs.test-unit.result == success()
+      && needs.test-integration.result == success())
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configurar permissões do Maven wrapper
+        run: chmod +x mvnw
+
+      - name: Configurar JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          # para acidionar o cache, fui no google e pesquisei por "actions/setup-java" e localizei os valores para "cache" com CTRL+F
+          cache: 'maven'
+          # é opcional e só é necessário em repositórios multi-módulos (multi-project), ou quando o arquivo `pom.xml` está fora da raiz do projeto
+          # cache-dependency-path: 'sub-project/pom.xml'
+
+      # Step para simular mensagem de deploying...
+      - name: Enviando mensagem de deploying...
+        run: echo "🚀 Deploying aplicação... Por favor, aguarde!"
+
+      #- name: Build do projeto para produzir artefato (caso não esteja com o último .jar)
+      #  run: ./mvnw clean package -DskipTests
+
+      # Exemplo: Deploy via SCP para servidor remoto
+      #- name: Deploy do JAR para o Servidor
+      #  uses: appleboy/scp-action@v0.1.7
+      #  with:
+      #    host: ${{ secrets.REMOTE_HOST }}
+      #    username: ${{ secrets.REMOTE_USER }}
+      #    key: ${{ secrets.REMOTE_KEY }}
+      #    port: 22
+      #    source: "target/nome-do-seu-produto.jar"
+      #    target: "/caminho/para/a/pasta/no/servidor"
+
+      # Esse é um exemplo de execução remota para reiniciar o serviço após copiar o JAR
+      #- name: Reiniciar aplicação no servidor remoto via SSH
+      #  uses: appleboy/ssh-action@v1.0.3
+      #  with:
+      #    host: ${{ secrets.REMOTE_HOST }}
+      #    username: ${{ secrets.REMOTE_USER }}
+      #    key: ${{ secrets.REMOTE_KEY }}
+      #    port: 22
+      #    script: |
+      #      systemctl restart nome-do-seu-servico
