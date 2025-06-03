@@ -100,8 +100,8 @@ jobs:
           # cache-dependency-path: 'sub-project/pom.xml'
 
       # Subir os serviços do docker-compose antes dos testes (Sobe seus containers, ex. banco/kafka)
-      - name: Subir containers necessários com Docker Compose
-        run: docker compose -f docker-compose.yml up -d
+      - name: Subir containers de infra necessários com Docker Compose
+        run: docker compose -f docker-compose.yml up -d postgres kafka zookeeper kafdrop
 
       # Espera alguns segundos para os containers ficarem prontos (ajuste se necessário)
       - name: Aguardar serviços subirem (opcional)
