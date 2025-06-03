@@ -68,7 +68,7 @@ jobs:
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@v2
         with:
-          projectKey: jorgedoriajr_jorgedoriajr_backend-creditos
+          projectKey: jorgedoriajr_backend-creditos
           organization: jorgedoriajr
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
