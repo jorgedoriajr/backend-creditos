@@ -90,7 +90,7 @@ jobs:
         run: |
           # Exemplo de consulta dos valores de New Code Coverage e Duplicação via API
           PROJECT_KEY='jorgedoriajr_backend-creditos'
-          SONAR_HOST_URL='https://sonarcloud.io/projects'
+          SONAR_HOST_URL='https://sonarcloud.io'
           SONAR_TOKEN='${{ secrets.SONAR_TOKEN }}'
 
           COVERAGE=$(curl -s -u "$SONAR_TOKEN:" "$SONAR_HOST_URL/api/measures/component?component=$PROJECT_KEY&metricKeys=new_coverage" | jq '.component.measures[0].value')
