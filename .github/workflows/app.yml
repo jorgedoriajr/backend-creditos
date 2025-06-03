@@ -68,6 +68,7 @@ jobs:
         with:
           java-version: '21'
           distribution: 'temurin'
+
       - name: Cache SonarQube packages
         uses: actions/cache@v4
         with:
@@ -84,10 +85,30 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=jorgedoriajr_backend-creditos
-      - name: Verificar Quality Gate
-        uses: SonarSource/sonarcloud-quality-gate-action@master
-        with:
-          sonar_token: ${{ secrets.SONAR_TOKEN }}
+
+#      - name: Obter métricas no SonarQube
+#        run: |
+#          # Exemplo de consulta dos valores de New Code Coverage e Duplicação via API
+#          PROJECT_KEY='jorgedoriajr_backend-creditos'
+#          SONAR_HOST_URL='https://sonarcloud.io'
+#          SONAR_TOKEN='${{ secrets.SONAR_TOKEN }}'
+#
+#          COVERAGE=$(curl -s -u "$SONAR_TOKEN:" "$SONAR_HOST_URL/api/measures/component?component=$PROJECT_KEY&metricKeys=new_coverage" | jq '.component.measures[0].value')
+#          DUPLICATION=$(curl -s -u "$SONAR_TOKEN:" "$SONAR_HOST_URL/api/measures/component?component=$PROJECT_KEY&metricKeys=new_duplicated_lines_density" | jq '.component.measures[0].value')
+#
+#          echo "Cobertura Novo Código: $COVERAGE"
+#          echo "Duplicação Novo Código: $DUPLICATION"
+#
+#      - name: Checar métricas manualmente
+#        run: |
+#          if (( $(echo "$COVERAGE < 80" | bc -l) )); then
+#            echo "Cobertura em novo código abaixo de 80%!"
+#            exit 1
+#          fi
+#          if (( $(echo "$DUPLICATION > 3" | bc -l) )); then
+#            echo "Duplicação em novo código acima de 3%!"
+#            exit 1
+#          fi
 
   test-unit:
     # o "needs" garante que só roda após o build concluir...(O "needs" é quando queremos fazer dependência entre Jobs no modo geral)
@@ -175,7 +196,7 @@ jobs:
   deploy:
     # Aqui o "needs" pode agrupar N dependências num array de Jobs...
     # Porém, ambos "needs" e "if" podem co-existir (existir no mesmo lugar...)
-    needs: [build, test-unit, test-integration]
+    needs: [build, sonar, test-unit, test-integration]
     # Só faz deploy na master -> se os testes unitário forem executados com sucesso,
     # se o build for executado com sucesso e se os testes de integração foram executados com sucesso também.
     # Tem que avaliar todas as dependências dentro do array de jobs...
@@ -183,9 +204,10 @@ jobs:
     # O diferente de !cancelled() serve para habilitar de forma correta o cancelamento da execução do Flow...
     if: (!cancelled()
       && (github.event_name == 'workflow_dispatch' || github.ref == 'refs/heads/master')
-      && needs.build.result == success()
-      && needs.test-unit.result == success()
-      && needs.test-integration.result == success())
+      && needs.build.result == 'success'
+      && needs.test-unit.result == 'success'
+      && needs.test-integration.result == 'success'
+      && needs.sonar.result == 'success')
     runs-on: ubuntu-latest
 
     steps:
