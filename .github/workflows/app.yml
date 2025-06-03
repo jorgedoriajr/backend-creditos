@@ -86,8 +86,8 @@ jobs:
         run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=jorgedoriajr_backend-creditos
       - name: Verificar Quality Gate
         uses: sonarsource/sonarqube-quality-gate-action@master
-        with:
-          sonar_token: ${{ secrets.SONAR_TOKEN }}
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
   test-unit:
     # o "needs" garante que só roda após o build concluir...(O "needs" é quando queremos fazer dependência entre Jobs no modo geral)
