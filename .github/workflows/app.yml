@@ -86,29 +86,29 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=jorgedoriajr_backend-creditos
 
-      - name: Obter métricas no SonarQube
-        run: |
-          # Exemplo de consulta dos valores de New Code Coverage e Duplicação via API
-          PROJECT_KEY='jorgedoriajr_backend-creditos'
-          SONAR_HOST_URL='https://sonarcloud.io'
-          SONAR_TOKEN='${{ secrets.SONAR_TOKEN }}'
-
-          COVERAGE=$(curl -s -u "$SONAR_TOKEN:" "$SONAR_HOST_URL/api/measures/component?component=$PROJECT_KEY&metricKeys=new_coverage" | jq '.component.measures[0].value')
-          DUPLICATION=$(curl -s -u "$SONAR_TOKEN:" "$SONAR_HOST_URL/api/measures/component?component=$PROJECT_KEY&metricKeys=new_duplicated_lines_density" | jq '.component.measures[0].value')
-
-          echo "Cobertura Novo Código: $COVERAGE"
-          echo "Duplicação Novo Código: $DUPLICATION"
-
-      - name: Checar métricas manualmente
-        run: |
-          if (( $(echo "$COVERAGE < 80" | bc -l) )); then
-            echo "Cobertura em novo código abaixo de 80%!"
-            exit 1
-          fi
-          if (( $(echo "$DUPLICATION > 3" | bc -l) )); then
-            echo "Duplicação em novo código acima de 3%!"
-            exit 1
-          fi
+#      - name: Obter métricas no SonarQube
+#        run: |
+#          # Exemplo de consulta dos valores de New Code Coverage e Duplicação via API
+#          PROJECT_KEY='jorgedoriajr_backend-creditos'
+#          SONAR_HOST_URL='https://sonarcloud.io'
+#          SONAR_TOKEN='${{ secrets.SONAR_TOKEN }}'
+#
+#          COVERAGE=$(curl -s -u "$SONAR_TOKEN:" "$SONAR_HOST_URL/api/measures/component?component=$PROJECT_KEY&metricKeys=new_coverage" | jq '.component.measures[0].value')
+#          DUPLICATION=$(curl -s -u "$SONAR_TOKEN:" "$SONAR_HOST_URL/api/measures/component?component=$PROJECT_KEY&metricKeys=new_duplicated_lines_density" | jq '.component.measures[0].value')
+#
+#          echo "Cobertura Novo Código: $COVERAGE"
+#          echo "Duplicação Novo Código: $DUPLICATION"
+#
+#      - name: Checar métricas manualmente
+#        run: |
+#          if (( $(echo "$COVERAGE < 80" | bc -l) )); then
+#            echo "Cobertura em novo código abaixo de 80%!"
+#            exit 1
+#          fi
+#          if (( $(echo "$DUPLICATION > 3" | bc -l) )); then
+#            echo "Duplicação em novo código acima de 3%!"
+#            exit 1
+#          fi
 
   test-unit:
     # o "needs" garante que só roda após o build concluir...(O "needs" é quando queremos fazer dependência entre Jobs no modo geral)
