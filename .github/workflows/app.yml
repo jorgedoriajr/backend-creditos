@@ -93,10 +93,10 @@ jobs:
       - name: "Example show SonarQube Quality Gate Status value"
         run: echo "The Quality Gate status is ${{ steps.sonarqube-quality-gate-check.outputs.quality-gate-status }}"
       # add report metadata file
-      - name: SonarQube Quality Gate check
-        uses: sonarsource/sonarqube-quality-gate-action@master
-        with:
-          scanMetadataReportFile: target/sonar/report-task.txt
+      #- name: SonarQube Quality Gate check
+      #  uses: sonarsource/sonarqube-quality-gate-action@master
+      #  with:
+      #    scanMetadataReportFile: target/sonar/report-task.txt
 
   test-unit:
     # o "needs" garante que só roda após o build concluir...(O "needs" é quando queremos fazer dependência entre Jobs no modo geral)
