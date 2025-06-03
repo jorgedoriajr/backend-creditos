@@ -55,6 +55,9 @@ jobs:
       - name: Build (compilar projeto com Maven)
         run: ./mvnw clean package -DskipTests
 
+      - name: Conferir existência do JAR
+        run: ls -lh target/
+
       # 6. Gerar o arquivo `target/backend-creditos-0.0.1-SNAPSHOT.jar`.
       - name: Build da imagem Docker
         run: docker build -t backend-creditos .
